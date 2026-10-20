@@ -1,0 +1,355 @@
+.screen {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.9s var(--ease) both;
+}
+
+/* plays when the password is correct, right before the main site mounts */
+.leaving {
+  animation: fadeOut 0.9s var(--ease) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(8px);
+  }
+}
+
+/* --- floating emoji in the background -------------------------------------- */
+.floaters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.floater {
+  position: absolute;
+  font-size: clamp(1.1rem, 3vw, 1.9rem);
+  opacity: 0.55;
+  left: calc(6% + var(--i) * 11.6%);
+  bottom: -12%;
+  animation: rise linear infinite;
+  animation-duration: calc(15s + var(--i) * 2.2s);
+  animation-delay: calc(var(--i) * -3.1s);
+}
+@keyframes rise {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.6; }
+  88% { opacity: 0.5; }
+  100% { transform: translateY(-118svh) rotate(24deg); opacity: 0; }
+}
+
+/* --- the card -------------------------------------------------------------- */
+.card {
+  position: relative;
+  width: min(30rem, 100%);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--r-xl);
+  padding: clamp(2.2rem, 6vw, 3.2rem) clamp(1.4rem, 5vw, 2.8rem) clamp(1.6rem, 4vw, 2.2rem);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: popIn 0.85s var(--ease) 0.12s both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(26px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.ribbon {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  animation: bob 3.6s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-7px); }
+}
+
+.kicker {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--rose-ink);
+  opacity: 0.7;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 7.4vw, 2.85rem);
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.sub {
+  margin: 0 0 1.9rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+/* --- form ------------------------------------------------------------------ */
+.form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+/* --- one box per letter ----------------------------------------------------- */
+.boxes {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.3rem, 2vw, 0.55rem);
+}
+
+.boxWrap {
+  position: relative;
+  display: block;
+}
+
+.box {
+  display: block;
+  width: clamp(2.1rem, 10vw, 2.9rem);
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1;
+  /* the letter itself is hidden — the star below stands in for it */
+  color: transparent;
+  caret-color: var(--rose);
+  text-transform: uppercase;
+  border-radius: 14px;
+  border: 2px solid var(--blush);
+  background: var(--cream);
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    background var(--t-fast), transform var(--t-fast) var(--ease);
+}
+
+.box:focus {
+  border-color: var(--rose);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(231, 154, 174, 0.2);
+  transform: translateY(-3px);
+}
+
+.boxFilled {
+  background: var(--white);
+  border-color: var(--gold);
+}
+
+/* hide the browser's own selection highlight, which would leak the letter */
+.box::selection {
+  background: transparent;
+}
+
+/* the star standing in for the typed letter */
+.mask {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: clamp(1rem, 4vw, 1.35rem);
+  line-height: 1;
+  color: var(--gold-deep);
+  animation: starPop 0.28s var(--ease) both;
+}
+
+@keyframes starPop {
+  0% { opacity: 0; transform: scale(0.3) rotate(-40deg); }
+  70% { opacity: 1; transform: scale(1.25) rotate(6deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.hint {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.button {
+  padding: 0.95rem 1.5rem;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--rose), var(--lavender-deep));
+  box-shadow: 0 10px 24px rgba(231, 154, 174, 0.4);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast);
+}
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 32px rgba(231, 154, 174, 0.5);
+  filter: saturate(1.08);
+}
+.button:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* --- messages -------------------------------------------------------------- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE CUTE ANGRY POP-UP
+   ═════════════════════════════════════════════════════════════════════════ */
+.popWrap {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.popBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(74, 59, 65, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s var(--ease) both;
+  cursor: pointer;
+}
+
+.pop {
+  position: relative;
+  width: min(21rem, 100%);
+  text-align: center;
+  padding: 2.4rem 1.6rem 1.6rem;
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, #fff4f3, #ffe9ee 55%, #f6e6f7);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 60px rgba(160, 116, 132, 0.35);
+  animation: popBounce 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+
+@keyframes popBounce {
+  0% { opacity: 0; transform: scale(0.6) rotate(-6deg); }
+  60% { opacity: 1; transform: scale(1.06) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.popEmoji {
+  display: block;
+  font-size: 3.4rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  animation: fume 0.55s var(--ease) 0.3s 3;
+  transform-origin: center bottom;
+}
+
+/* a little furious wobble */
+@keyframes fume {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-9deg) scale(1.08); }
+  75% { transform: rotate(9deg) scale(1.08); }
+}
+
+.popTitle {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.05;
+  color: #c9455f;
+}
+
+.popLine {
+  margin: 0 0 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.popBtn {
+  padding: 0.75rem 1.7rem;
+  border-radius: 99px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #e4708a, #c9738f);
+  box-shadow: 0 10px 22px rgba(201, 69, 95, 0.35);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.popBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(201, 69, 95, 0.42);
+}
+.popBtn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* steam and anger marks drifting off the card */
+.puff1,
+.puff2 {
+  position: absolute;
+  font-size: 1.4rem;
+  pointer-events: none;
+}
+.puff1 {
+  top: 0.6rem;
+  left: 1rem;
+  animation: drift 2.4s ease-in-out infinite;
+}
+.puff2 {
+  top: 0.9rem;
+  right: 1.1rem;
+  animation: drift 2.4s ease-in-out 0.5s infinite;
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.75; }
+  50% { transform: translateY(-10px) scale(1.15); opacity: 1; }
+}
+
+@media (max-width: 420px) {
+  .popEmoji { font-size: 2.9rem; }
+  .popTitle { font-size: 1.9rem; }
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  animation: fadeIn 0.5s var(--ease) both;
+}
+
+/* --- the gentle shake ------------------------------------------------------ */
+.shake {
+  animation: shake 0.6s var(--ease);
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-5px); }
+  20%, 80% { transform: translateX(8px); }
+  30%, 50%, 70% { transform: translateX(-11px); }
+  40%, 60% { transform: translateX(11px); }
+  100% { transform: translateX(0); }
+}

@@ -1,0 +1,137 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+}
+
+/* the 3D stage */
+.scene {
+  perspective: 1400px;
+}
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3.4;
+  padding: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease);
+  border-radius: var(--r-lg);
+}
+
+/* flip on hover (desktop) and on click/tap (everywhere) */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: rotateY(180deg);
+  }
+}
+.flipped {
+  transform: rotateY(180deg) !important;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 1.6rem 1.35rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  background: linear-gradient(155deg, var(--white), var(--cream-deep));
+  border: 1px solid rgba(242, 184, 198, 0.45);
+}
+
+/* FRONT */
+.emoji {
+  font-size: 1.6rem;
+  margin-bottom: 0.2rem;
+}
+
+.num {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.bigNum {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 8vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(120deg, var(--rose-ink), var(--lilac-ink) 60%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tapHint {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--rose);
+  opacity: 0.8;
+  margin-top: 0.35rem;
+}
+
+/* BACK */
+.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(155deg, var(--blush), var(--lavender));
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  gap: 0.5rem;
+}
+
+.quote {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 0.6;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.backText {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 4vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+/* --- open / close all ------------------------------------------------------ */
+.allWrap {
+  text-align: center;
+  margin-top: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.allBtn {
+  padding: 0.75rem 1.7rem;
+  border-radius: 99px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--rose-ink);
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid var(--blush-deep);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    background var(--t-fast);
+}
+.allBtn:hover {
+  transform: translateY(-2px);
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 480px) {
+  .card {
+    aspect-ratio: 4 / 3;
+  }
+}

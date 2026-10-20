@@ -1,0 +1,1081 @@
+/* the magazine gets its own softly tinted band so it reads as a "spread" */
+.wrap {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.62) 8%,
+    rgba(255, 255, 255, 0.62) 92%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE BOOK — an open spread with the spine down the middle.
+
+   Every entry in data.js is one full spread, and its layout runs right across
+   both halves. Each half is a window onto one side of that layout: the sheet
+   inside is the full spread width, and the right-hand window slides it left to
+   reveal its other half. Nothing reflows when a page turns, because it's always
+   the same layout — you're just seeing a different part of it.
+   ═════════════════════════════════════════════════════════════════════════ */
+.book {
+  position: relative;
+  max-width: min(64rem, 100%);
+  margin: 0 auto;
+}
+
+/* The 3D stage the pages turn inside.
+   The height is FIXED so every spread in the issue is exactly the same size. */
+.stage {
+  position: relative;
+  /* The halves clip, so the floor here has to be tall enough for the longest
+     spread. Measured: the tallest page needs 704px, so 45rem gives it a small
+     cushion. On a short screen the book simply extends past the fold and you
+     scroll to it, rather than losing the bottom of an article.
+     If you add a lot of copy to a page and it gets cut off, raise the floor. */
+  height: clamp(45rem, 82svh, 48rem);
+  /* the viewer's eye position — a long focal length keeps the turn calm
+     rather than fish-eyed */
+  perspective: 2400px;
+  perspective-origin: 50% 50%;
+
+  --turn: 900ms;
+  /* slow to lift, quick through the middle, settles softly — how paper moves */
+  --turn-ease: cubic-bezier(0.38, 0.02, 0.24, 1);
+}
+
+/* --- the open book lying flat ---------------------------------------------- */
+.spread {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  background: var(--white);
+}
+
+/* one window onto half of the spread */
+.half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  background: var(--white);
+}
+.halfL {
+  left: 0;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+}
+.halfR {
+  right: 0;
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+/* the full-width page sitting behind a half-window */
+.sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%; /* = the whole spread */
+  height: 100%;
+}
+/* slide it left so the window shows the page's right-hand half */
+.sheetR {
+  left: -100%;
+}
+
+.sheet > article {
+  min-height: 100%;
+  width: 100%;
+}
+
+/* --- the binding ----------------------------------------------------------- */
+.gutter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4.5rem;
+  margin-left: -2.25rem;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(184, 132, 148, 0) 0%,
+    rgba(140, 96, 112, 0.13) 42%,
+    rgba(120, 80, 96, 0.2) 50%,
+    rgba(140, 96, 112, 0.13) 58%,
+    rgba(184, 132, 148, 0) 100%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   THE PAGE TURN
+   One physical leaf, hinged on the spine in the middle of the book. Its front
+   is the right half of the page you're leaving; its back is the left half of
+   the page you're arriving at — exactly like the two sides of a real sheet.
+   ------------------------------------------------------------------------ */
+.leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 50%; /* one leaf = half the open book */
+  z-index: 4;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transform-origin: left center; /* the binding, dead centre */
+  will-change: transform;
+}
+
+.leafNext {
+  animation: leafNext var(--turn) var(--turn-ease) forwards;
+}
+.leafPrev {
+  animation: leafPrev var(--turn) var(--turn-ease) forwards;
+}
+
+@keyframes leafNext {
+  0% { transform: rotateY(0deg); }
+  /* stops a touch short of flat so the sheet keeps a little thickness */
+  100% { transform: rotateY(-173deg); }
+}
+@keyframes leafPrev {
+  0% { transform: rotateY(-173deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+.leafFront,
+.leafBack {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--white);
+  box-shadow: 0 10px 34px rgba(120, 80, 96, 0.24);
+}
+
+/* the leaf starts as the right-hand page, so it's rounded on the outer edge */
+.leafFront {
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+/* Its reverse. Flipped 180°, so it lands as the left-hand page — which means
+   its rounded corners and its content both come out mirrored into place. */
+.leafBack {
+  transform: rotateY(180deg);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+.leafBackInner {
+  position: absolute;
+  inset: 0;
+}
+
+/* --- light falling across the turning paper -------------------------------- */
+.shade,
+.backShade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* printed side: darkens as it tips away from the light */
+.shade {
+  background: linear-gradient(90deg, rgba(74, 59, 65, 0.42) 0%, rgba(74, 59, 65, 0) 42%);
+}
+.shadeNext {
+  animation: shadeOn var(--turn) var(--turn-ease) forwards;
+}
+.shadePrev {
+  animation: shadeOff var(--turn) var(--turn-ease) forwards;
+}
+
+/* paper side: bright as it comes round, settling as it lands */
+.backShade {
+  background: linear-gradient(270deg, rgba(74, 59, 65, 0.3) 0%, rgba(74, 59, 65, 0) 45%);
+}
+.backShadeNext {
+  animation: shadeOff var(--turn) var(--turn-ease) forwards;
+}
+.backShadePrev {
+  animation: shadeOn var(--turn) var(--turn-ease) forwards;
+}
+
+@keyframes shadeOn {
+  0% { opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0.9; }
+}
+@keyframes shadeOff {
+  0% { opacity: 0.9; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+/* --- the shadow the lifting leaf throws across the page beneath it ---------- */
+.cast {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 50%;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  background: linear-gradient(90deg, rgba(74, 59, 65, 0.5) 0%, rgba(74, 59, 65, 0) 90%);
+}
+.castNext {
+  animation: castOff var(--turn) var(--turn-ease) forwards;
+}
+.castPrev {
+  animation: castOn var(--turn) var(--turn-ease) forwards;
+}
+
+@keyframes castOff {
+  0% { opacity: 0.95; }
+  55% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+@keyframes castOn {
+  0% { opacity: 0; }
+  55% { opacity: 0.4; }
+  100% { opacity: 0.95; }
+}
+
+/* people who asked for less motion get an instant, clean page swap */
+@media (prefers-reduced-motion: reduce) {
+  .leaf,
+  .cast {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   PHONES — a spread is unreadable at 390px wide, so the book collapses to a
+   single page and the leaf hinges on the outer edge instead of the middle.
+   Same component, same animation; only the geometry changes.
+   ------------------------------------------------------------------------ */
+@media (max-width: 820px) {
+  .halfL,
+  .gutter {
+    display: none;
+  }
+  .halfR {
+    width: 100%;
+    border-radius: var(--r-lg);
+  }
+  /* the window is now the whole page, so stop sliding the sheet across */
+  .halfR .sheetR,
+  .leafFront .sheetR {
+    width: 100%;
+    left: 0;
+  }
+  .leaf {
+    width: 100%;
+  }
+  .leafFront,
+  .leafBack {
+    border-radius: var(--r-lg);
+  }
+  /* no facing page to show on the reverse — just paper */
+  .leafBackInner {
+    display: none;
+  }
+  .leafBack {
+    background:
+      linear-gradient(270deg, rgba(184, 132, 148, 0.2) 0%, rgba(184, 132, 148, 0) 24%),
+      linear-gradient(200deg, #fffdf9, var(--cream-deep));
+  }
+  .cast {
+    left: 0;
+    width: 100%;
+    border-radius: var(--r-lg);
+  }
+}
+
+/* ═══════════════════════ CONTROLS ═══════════════════════ */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.2rem, 4vw, 2.2rem);
+  margin-top: 1.5rem;
+}
+
+.arrow {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  font-size: 1.9rem;
+  line-height: 1;
+  padding-bottom: 5px;
+  color: var(--rose-ink);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--blush);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    background var(--t-fast);
+}
+.arrow:hover {
+  transform: translateY(-2px) scale(1.06);
+  background: var(--blush);
+  box-shadow: var(--shadow-md);
+}
+.arrow:active {
+  transform: scale(0.95);
+}
+
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-family: var(--font-serif);
+  min-width: 4.5rem;
+  justify-content: center;
+}
+.counterNum {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: var(--rose-ink);
+  line-height: 1;
+}
+.counterSlash {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+.counterTotal {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: var(--blush-deep);
+  opacity: 0.55;
+  transition: width var(--t-med) var(--ease), opacity var(--t-med), background var(--t-med);
+}
+.dot:hover {
+  opacity: 0.85;
+}
+.dotOn {
+  width: 26px;
+  opacity: 1;
+  background: var(--rose);
+}
+
+.hint {
+  text-align: center;
+  margin: 0.9rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.65;
+}
+
+/* ═══════════════════════ 1. COVER PAGE ═══════════════════════ */
+.cover {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.coverImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  z-index: -2;
+}
+
+.coverScrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(74, 59, 65, 0.52) 0%, rgba(74, 59, 65, 0) 30%),
+    linear-gradient(0deg, rgba(74, 59, 65, 0.8) 0%, rgba(74, 59, 65, 0) 48%),
+    /* just a whisper of pastel so the photo itself stays crisp */
+    linear-gradient(135deg, rgba(205, 189, 236, 0.16), rgba(242, 184, 198, 0.14));
+}
+
+.coverTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.1rem, 3.5vw, 2rem) clamp(1.1rem, 3.5vw, 2rem) 0;
+  text-align: center;
+}
+
+.masthead {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 6.2vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.coverMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  font-size: clamp(0.52rem, 1.5vw, 0.66rem);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.coverBody {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 clamp(1.1rem, 3.5vw, 2.2rem) clamp(1.4rem, 4vw, 2.4rem);
+}
+
+.coverKicker {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--gold);
+  padding: 0.32rem 0.8rem;
+  border-radius: 99px;
+  margin-bottom: 0.6rem;
+}
+
+.coverStar {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(3rem, 13vw, 6.5rem);
+  line-height: 0.92;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+.coverTagline {
+  margin: 0;
+  max-width: 26rem;
+  font-size: clamp(0.85rem, 2.4vw, 1.05rem);
+  font-weight: 600;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.coverSticker {
+  position: absolute;
+  top: clamp(6rem, 20vw, 8.5rem);
+  right: clamp(0.9rem, 3vw, 1.8rem);
+  display: grid;
+  place-items: center;
+  width: clamp(4.6rem, 15vw, 6.2rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--blush-deep);
+  color: var(--ink);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transform: rotate(-12deg);
+  animation: sticker 5s ease-in-out infinite;
+}
+.coverSticker em {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: clamp(0.95rem, 3.4vw, 1.3rem);
+  line-height: 1;
+}
+.coverSticker strong {
+  font-size: clamp(0.5rem, 1.7vw, 0.62rem);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+@keyframes sticker {
+  0%, 100% { transform: rotate(-12deg) scale(1); }
+  50% { transform: rotate(-6deg) scale(1.06); }
+}
+
+/* ═══════════════════════ shared page furniture ═══════════════════════ */
+.pageKicker {
+  margin: 0 0 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rose-ink);
+}
+
+.rule {
+  height: 2px;
+  background: var(--ink);
+  opacity: 0.85;
+  margin: 1.1rem 0 1.4rem;
+}
+
+/* ═══════════════════════ 2. CONTENTS PAGE ═══════════════════════ */
+.contents {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 13rem);
+  gap: clamp(1.2rem, 3.5vw, 2.4rem);
+  align-items: center;
+  padding: clamp(1.6rem, 5vw, 3.2rem);
+  background:
+    radial-gradient(28rem 20rem at 110% -10%, rgba(230, 221, 245, 0.55), transparent 70%),
+    var(--white);
+}
+
+.contentsHeading {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: clamp(2rem, 6.5vw, 3.2rem);
+  line-height: 1.02;
+}
+
+.contentsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.contentsList li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed rgba(184, 132, 148, 0.3);
+  transition: padding-left var(--t-fast) var(--ease);
+}
+.contentsList li:last-child {
+  border-bottom: none;
+}
+.contentsList li:hover {
+  padding-left: 0.45rem;
+}
+
+.contentsNum {
+  flex: none;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--gold-deep);
+  min-width: 2rem;
+}
+
+.contentsLeader {
+  flex: 1; /* stretches to fill the gap between title and page number */
+  height: 1px;
+  min-width: 0.8rem;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(184, 132, 148, 0.45) 0 2px,
+    transparent 2px 6px
+  );
+  order: 3;
+}
+
+.contentsLabel {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+  font-weight: 700;
+  line-height: 1.35;
+  order: 2;
+}
+
+.contentsPhoto {
+  margin: 0;
+  background: var(--white);
+  padding: 0.65rem 0.65rem 0.3rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  transform: rotate(3deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.contentsPhoto:hover {
+  transform: rotate(0deg);
+}
+.contentsPhoto img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+.contentsPhoto figcaption {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--rose-ink);
+  padding: 0.25rem 0 0.15rem;
+}
+
+/* ═══════════════════════ 3. FEATURE PAGE ═══════════════════════ */
+.feature {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.3rem, 3.2vw, 2.2rem);
+  background:
+    radial-gradient(26rem 18rem at -8% 110%, rgba(248, 215, 221, 0.5), transparent 70%),
+    var(--white);
+}
+
+.headline {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  max-width: 20ch;
+}
+
+.subhead {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.92rem, 2.3vw, 1.1rem);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+.featureBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  gap: clamp(1.1rem, 2.6vw, 1.9rem);
+  align-items: start;
+  flex: 1; /* pushes the pull quote down to the bottom of the page */
+}
+
+.columns {
+  columns: 2;
+  column-gap: clamp(1.1rem, 2.6vw, 2rem);
+  column-rule: 1px solid rgba(184, 132, 148, 0.22);
+  font-size: 0.93rem;
+  line-height: 1.8;
+  text-align: justify;
+  hyphens: auto;
+}
+.columns p {
+  margin: 0;
+}
+
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 3.4em;
+  line-height: 0.8;
+  font-weight: 900;
+  padding: 0.06em 0.09em 0 0;
+  color: var(--rose-ink);
+}
+
+.featurePhoto {
+  margin: 0;
+  background: var(--white);
+  padding: 0.6rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  transform: rotate(-2deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.featurePhoto:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+.featurePhoto img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+
+.pullQuote {
+  position: relative;
+  margin: clamp(0.9rem, 2.2vw, 1.4rem) 0 0;
+  padding: 1rem 1.3rem 1rem 2.5rem;
+  border-radius: var(--r-md);
+  background: linear-gradient(140deg, var(--blush), var(--lavender));
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+  line-height: 1.3;
+  color: var(--ink);
+  text-align: center;
+}
+.pullQuote span {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.85rem;
+  font-size: 1.9rem;
+  opacity: 0.55;
+  color: #fff;
+  font-style: normal;
+}
+
+/* ═══════════════════════ 4. PORTRAITS PAGE ═══════════════════════ */
+.portraits {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.3rem, 3.4vw, 2.3rem);
+  background:
+    radial-gradient(30rem 20rem at 100% 0%, rgba(248, 215, 221, 0.5), transparent 70%),
+    var(--white);
+}
+
+.portraitsHead {
+  text-align: center;
+  margin-bottom: clamp(1.2rem, 3vw, 2rem);
+}
+
+.portraitsHeading {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(2.1rem, 6.5vw, 3.4rem);
+  line-height: 1;
+}
+
+.portraitsBlurb {
+  margin: 0;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: var(--ink-soft);
+}
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: clamp(0.9rem, 2.4vw, 1.5rem);
+}
+
+.shot {
+  margin: 0;
+  background: var(--white);
+  padding: 0.6rem 0.6rem 0.85rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  transform: rotate(calc((var(--i) - 1) * 2.2deg));
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.shot:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+}
+.shot img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+.shot figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.shotLabel {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 0.2rem;
+}
+
+/* ═══════════════════════ 5. FACT FILE PAGE ═══════════════════════ */
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 12rem);
+  gap: clamp(1.2rem, 3.5vw, 2.4rem);
+  align-items: center;
+  padding: clamp(1.6rem, 5vw, 3.2rem);
+  background:
+    radial-gradient(26rem 20rem at 0% 100%, rgba(230, 221, 245, 0.55), transparent 70%),
+    var(--white);
+}
+
+.factsHeading {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: clamp(1.9rem, 6vw, 3rem);
+  line-height: 1.02;
+}
+
+.factsBlurb {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.9rem, 2.3vw, 1.05rem);
+  color: var(--ink-soft);
+}
+
+.factsList {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+.factsList > div {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: baseline;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px dashed rgba(184, 132, 148, 0.3);
+}
+.factsList > div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.factsList dt {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rose-ink);
+}
+.factsList dd {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(0.88rem, 2.2vw, 1rem);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.factsPhoto {
+  margin: 0;
+  background: var(--white);
+  padding: 0.6rem 0.6rem 0.25rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  transform: rotate(-3deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.factsPhoto:hover {
+  transform: rotate(0deg);
+}
+.factsPhoto img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+.factsPhoto figcaption {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--gold-deep);
+  padding: 0.45rem 0 0.3rem;
+}
+
+/* ═══════════════════════ 6. LETTER PAGE ═══════════════════════ */
+.letter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: clamp(2.4rem, 6vw, 3.6rem) clamp(1.5rem, 5vw, 4rem);
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 2.05rem,
+      rgba(230, 221, 245, 0.5) 2.05rem,
+      rgba(230, 221, 245, 0.5) calc(2.05rem + 1px)
+    ),
+    linear-gradient(160deg, #fffdf9, var(--cream-deep));
+  background-position: 0 3rem, 0 0;
+}
+
+.tape {
+  position: absolute;
+  top: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 7.5rem;
+  height: 1.7rem;
+  border-radius: 3px;
+  background: rgba(232, 201, 155, 0.6);
+  box-shadow: 0 3px 10px rgba(184, 132, 148, 0.18);
+}
+
+.letterHeading {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 1.3rem;
+  color: var(--rose-ink);
+  max-width: 16ch;
+}
+
+.letterBody {
+  margin: 0 0 1.6rem;
+  max-width: 40rem;
+  font-size: clamp(0.98rem, 2.5vw, 1.08rem);
+  line-height: 2.05rem; /* lines up with the ruled background */
+  color: var(--ink);
+  text-align: left;
+}
+
+.signoff {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--rose-ink);
+}
+
+.hearts {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+  font-size: 1.1rem;
+}
+.hearts span {
+  animation: pop 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.22s);
+}
+@keyframes pop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.14); }
+}
+
+/* ═══════════════════════ RESPONSIVE ═══════════════════════ */
+@media (max-width: 820px) {
+  .spine {
+    display: none;
+  }
+  .contents {
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+  .contentsPhoto {
+    max-width: 13rem;
+    margin: 0 auto;
+    order: -1;
+    transform: rotate(-2deg);
+  }
+  .featureBody {
+    grid-template-columns: 1fr;
+  }
+  .columns {
+    columns: 1;
+    text-align: left;
+  }
+  .featurePhoto {
+    max-width: 15rem;
+    margin: 0 auto;
+  }
+  .facts {
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+  .factsPhoto {
+    max-width: 11rem;
+    margin: 0 auto;
+    order: -1;
+    transform: rotate(-2deg);
+  }
+}
+
+@media (max-width: 520px) {
+  /* fact rows stack label above value so long values stay readable */
+  .factsList > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+  .shots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .shot:nth-child(3):last-child {
+    grid-column: span 2;
+    max-width: 12rem;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 560px) {
+  /* taller on a phone, and tighter content, so less of a page needs scrolling.
+     Every page is still exactly the same size — the densest ones (the fact
+     file, the features) just scroll a little inside their own page. */
+  .stage {
+    height: clamp(36rem, 82svh, 48rem);
+  }
+  .contents,
+  .feature,
+  .portraits,
+  .facts {
+    padding: 1.35rem 1.15rem;
+  }
+  .featurePhoto {
+    max-width: 10.5rem !important;
+  }
+  .factsPhoto {
+    max-width: 8rem !important;
+  }
+  .contentsPhoto {
+    max-width: 8.5rem !important;
+  }
+  .contentsPhoto figcaption {
+    font-size: 1.15rem;
+  }
+  .contentsList li {
+    padding: 0.6rem 0;
+  }
+  .contentsHeading {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+  .factsList {
+    gap: 0.45rem;
+  }
+  .factsList > div {
+    padding-bottom: 0.45rem;
+  }
+  .shot figcaption {
+    font-size: 0.74rem;
+  }
+  .letterBody {
+    text-align: left;
+  }
+  .hint {
+    font-size: 0.65rem;
+  }
+}

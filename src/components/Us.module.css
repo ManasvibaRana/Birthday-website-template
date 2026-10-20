@@ -1,0 +1,169 @@
+/* a warmer band so the ending feels like its own moment */
+.wrap {
+  position: relative;
+  background:
+    radial-gradient(40rem 26rem at 12% 12%, rgba(248, 215, 221, 0.55), transparent 68%),
+    radial-gradient(36rem 24rem at 88% 82%, rgba(230, 221, 245, 0.5), transparent 68%);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.6rem, 4vw, 3.4rem);
+  align-items: center;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* --- the photo, taped to the page ------------------------------------------ */
+.photoWrap {
+  position: relative;
+  margin: 0;
+  background: var(--white);
+  padding: 0.85rem 0.85rem 0.4rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg);
+  transform: rotate(-2deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.photoWrap:hover {
+  transform: rotate(0deg) scale(1.015);
+}
+.photoWrap img {
+  width: 100%;
+  border-radius: var(--r-sm);
+  display: block;
+}
+.photoWrap figcaption {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 1.8rem);
+  text-align: center;
+  color: var(--rose-ink);
+  padding: 0.45rem 0 0.25rem;
+}
+
+.tape {
+  position: absolute;
+  top: -0.85rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(2.5deg);
+  width: 7rem;
+  height: 1.7rem;
+  border-radius: 3px;
+  background: rgba(232, 201, 155, 0.62);
+  box-shadow: 0 3px 10px rgba(184, 132, 148, 0.2);
+  z-index: 2;
+}
+
+/* --- the note --------------------------------------------------------------- */
+.note {
+  position: relative;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--r-lg);
+  padding: clamp(1.8rem, 4.5vw, 3rem);
+  box-shadow: var(--shadow-md);
+  /* faint ruled-paper lines */
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent,
+    transparent 2.05rem,
+    rgba(230, 221, 245, 0.5) 2.05rem,
+    rgba(230, 221, 245, 0.5) calc(2.05rem + 1px)
+  );
+  background-position: 0 3.4rem;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 1.2rem;
+  background: linear-gradient(120deg, var(--rose-ink), var(--lilac-ink) 60%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.para {
+  margin: 0 0 1.05rem;
+  font-size: clamp(0.95rem, 2.3vw, 1.02rem);
+  line-height: 2.05rem; /* lines up with the ruled background */
+  color: var(--ink);
+}
+
+.signoff {
+  margin: 1.6rem 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  line-height: 1.15;
+  color: var(--rose-ink);
+}
+
+.from {
+  margin: 0;
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* --- sticky notes ----------------------------------------------------------- */
+.notes {
+  list-style: none;
+  margin: clamp(2.4rem, 6vw, 3.6rem) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.7rem, 2vw, 1.2rem);
+}
+
+.notes li {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  line-height: 1.2;
+  color: var(--ink);
+  padding: 0.85rem 1.3rem;
+  border-radius: 4px 14px 6px 12px;
+  box-shadow: var(--shadow-sm);
+  transform: rotate(calc((var(--i) - 1.5) * 2.2deg));
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.notes li:nth-child(4n + 1) { background: #fdf0d5; }
+.notes li:nth-child(4n + 2) { background: #fbdde4; }
+.notes li:nth-child(4n + 3) { background: #e8e0f7; }
+.notes li:nth-child(4n + 4) { background: #fdeae0; }
+
+.notes li:hover {
+  transform: rotate(0deg) translateY(-4px) scale(1.04);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- hearts ----------------------------------------------------------------- */
+.hearts {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: 1.3rem;
+}
+.hearts span {
+  animation: pop 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.22s);
+}
+@keyframes pop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-9px) scale(1.15); }
+}
+
+/* --- responsive ------------------------------------------------------------- */
+@media (max-width: 880px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .photoWrap {
+    max-width: 30rem;
+    margin: 0 auto;
+    transform: rotate(-1.2deg);
+  }
+}
