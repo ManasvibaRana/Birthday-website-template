@@ -1,0 +1,232 @@
+.line {
+  position: relative;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.5rem 0 1rem;
+}
+
+/* the vertical rail */
+.rail {
+  position: absolute;
+  top: 0;
+  bottom: 5rem;
+  left: 50%;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 99px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--blush-deep) 6%,
+    var(--lavender-deep) 55%,
+    var(--gold) 94%,
+    transparent
+  );
+  opacity: 0.9;
+}
+
+.item {
+  position: relative;
+  width: 50%;
+  padding-bottom: clamp(2rem, 5vw, 3.2rem);
+  /* the gap between the rail and the card — the connector spans it */
+  --gap: clamp(1.6rem, 4vw, 3rem);
+}
+
+.left {
+  margin-right: auto;
+  padding-right: var(--gap);
+}
+.right {
+  margin-left: auto;
+  padding-left: var(--gap);
+}
+
+/* the dot on the rail */
+.dot {
+  position: absolute;
+  top: 1.85rem;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--rose);
+  box-shadow: 0 0 0 5px rgba(248, 215, 221, 0.6);
+  z-index: 3;
+}
+.left .dot {
+  right: -7.5px;
+}
+.right .dot {
+  left: -7.5px;
+}
+
+/* the dashed connector running from the rail out to the card */
+.item::before {
+  content: '';
+  position: absolute;
+  top: calc(1.85rem + 6px);
+  width: var(--gap);
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(184, 132, 148, 0.5) 0 4px,
+    transparent 4px 9px
+  );
+  z-index: 1;
+}
+.left::before {
+  right: 0;
+}
+.right::before {
+  left: 0;
+}
+
+/* the cards are full width of their half, so both columns line up */
+.card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--r-lg);
+  padding: 1.45rem 1.55rem 1.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.date {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--lilac-ink);
+  background: var(--lavender);
+  padding: 0.34rem 0.8rem;
+  border-radius: 99px;
+  margin-bottom: 0.7rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 0.45rem;
+  color: var(--ink);
+}
+
+.text {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.75;
+}
+
+/* --- photos ---------------------------------------------------------------
+   A fixed 4:3 window with a tunable focus point, so portrait phone photos
+   don't get their heads cropped off. Set `photoFocus` per entry in data.js. */
+.photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center 35%;
+  border-radius: var(--r-md);
+  margin-top: 1.05rem;
+  box-shadow: var(--shadow-sm);
+  background: var(--cream-deep);
+  transition: transform var(--t-med) var(--ease);
+}
+.card:hover .photo {
+  transform: scale(1.015);
+}
+
+/* --- the video (portrait clip, framed like a phone screen) ----------------- */
+.videoWrap {
+  margin: 1.15rem 0 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+}
+
+.video {
+  width: auto;
+  max-width: 100%;
+  max-height: 24rem;
+  border-radius: var(--r-md);
+  background: #2c2226;
+  box-shadow: var(--shadow-md), 0 0 0 5px var(--white), 0 0 0 7px var(--blush);
+  display: block;
+}
+
+.videoWrap figcaption {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--rose-ink);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* the closing flourish at the bottom of the rail */
+.end {
+  text-align: center;
+  padding-top: 0.5rem;
+}
+.end span {
+  display: inline-grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  font-size: 1.4rem;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+.end p {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--rose-ink);
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* --- mobile: single column, rail on the left ------------------------------- */
+@media (max-width: 820px) {
+  .rail {
+    left: 9px;
+    margin-left: 0;
+    bottom: 5.5rem;
+  }
+  .item {
+    width: 100%;
+    --gap: 1.5rem;
+    padding: 0 0 2rem calc(9px + var(--gap));
+  }
+  .left,
+  .right {
+    margin: 0;
+    padding-right: 0;
+  }
+  .left .dot,
+  .right .dot {
+    left: 2.5px;
+    right: auto;
+  }
+  .left::before,
+  .right::before {
+    left: 16px;
+    right: auto;
+  }
+  .end {
+    padding-left: 0;
+  }
+}

@@ -1,0 +1,81 @@
+/* The whole site gently fades in when the login unlocks.
+   NOTE: this animates opacity ONLY, on purpose. Animating transform or filter
+   here would turn .site into a containing block and break every
+   `position: fixed` child (the nav, the lightbox, the confetti). The scale /
+   blur part of the entrance lives on .enterInner below instead, which wraps
+   only the scrolling content. */
+.site {
+  animation: fadeUp 1.1s var(--ease) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* the soft zoom-out-of-blur entrance, applied to the page content only */
+.enterInner {
+  animation: unblur 1.1s var(--ease);
+}
+
+@keyframes unblur {
+  from {
+    transform: scale(1.015);
+    filter: blur(6px);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* --- footer ---------------------------------------------------------------- */
+.footer {
+  text-align: center;
+  padding: 2.5rem 1.25rem 3.5rem;
+  color: var(--ink-soft);
+}
+.footer p {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--rose-ink);
+}
+.small {
+  font-family: var(--font-body) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft) !important;
+  opacity: 0.7;
+}
+
+/* --- confetti -------------------------------------------------------------- */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti span {
+  position: absolute;
+  top: -6vh;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110svh) rotate(680deg);
+    opacity: 0;
+  }
+}

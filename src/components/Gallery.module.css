@@ -1,0 +1,150 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   POLAROIDS PEGGED TO A WASHING LINE
+   Each tile draws its own short length of string, stretched past its edges so
+   it joins up with its neighbours into one continuous line across the row.
+   ═════════════════════════════════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  column-gap: clamp(0.9rem, 2.4vw, 1.6rem);
+  row-gap: clamp(2.6rem, 5vw, 3.8rem);
+}
+
+.tile {
+  position: relative;
+  display: block;
+  padding: 1.55rem 0 0; /* room for the string and the peg above the photo */
+  background: none;
+  --tilt: -1.4deg;
+}
+
+/* a rotating set of tilts so the row looks hand-hung, not machine-placed */
+.tile:nth-child(5n + 1) { --tilt: -1.8deg; }
+.tile:nth-child(5n + 2) { --tilt: 1.3deg; }
+.tile:nth-child(5n + 3) { --tilt: -0.7deg; }
+.tile:nth-child(5n + 4) { --tilt: 2.1deg; }
+.tile:nth-child(5n + 5) { --tilt: -1.2deg; }
+
+/* --- the string ------------------------------------------------------------ */
+.string {
+  position: absolute;
+  top: 0.62rem;
+  /* overshoot into the gutters so neighbouring tiles' strings meet up */
+  left: -2rem;
+  right: -2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #d8bfa8, #c9a98f 45%, #d8bfa8);
+  opacity: 0.85;
+}
+
+/* a touch of sag, so it reads as string rather than a ruled line */
+.string::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 1px 0 rgba(184, 132, 148, 0.25);
+}
+
+/* --- the wooden peg -------------------------------------------------------- */
+.peg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.62rem;
+  height: 1.85rem;
+  margin-left: -0.31rem;
+  z-index: 3;
+  border-radius: 3px 3px 4px 4px;
+  background: linear-gradient(100deg, #f2dcc1 0%, #e0c09c 55%, #cba97f 100%);
+  transform: rotate(var(--tilt));
+  transform-origin: 50% 20%;
+  box-shadow: 0 2px 5px rgba(140, 96, 112, 0.28);
+  transition: transform var(--t-med) var(--ease);
+}
+
+/* the little metal spring across the middle of a clothes peg */
+.peg::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: 55%;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(150, 116, 88, 0.75);
+}
+
+/* --- the polaroid ---------------------------------------------------------- */
+.polaroid {
+  display: block;
+  background: #fffdf9;
+  padding: 0.6rem 0.6rem 0.2rem;
+  border-radius: 3px;
+  box-shadow: 0 10px 22px rgba(140, 96, 112, 0.22), 0 1px 0 rgba(0, 0, 0, 0.04);
+  /* hangs from the peg, so it swings about that point */
+  transform-origin: 50% -0.6rem;
+  transform: rotate(var(--tilt));
+  transition: transform 0.55s var(--ease), box-shadow var(--t-med) var(--ease);
+}
+
+.frame {
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--cream-deep);
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s var(--ease);
+}
+
+.wide {
+  grid-column: span 2;
+}
+.wide .polaroid img {
+  aspect-ratio: 2 / 1;
+}
+
+/* the handwritten caption on the white lip of the polaroid */
+.caption {
+  display: block;
+  padding: 0.5rem 0.25rem 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* --- hover: it swings on the peg ------------------------------------------- */
+.tile:hover .polaroid,
+.tile:focus-visible .polaroid {
+  transform: rotate(calc(var(--tilt) * -1.6)) translateY(3px);
+  box-shadow: 0 18px 34px rgba(140, 96, 112, 0.3);
+}
+.tile:hover .peg {
+  transform: rotate(calc(var(--tilt) * -0.5));
+}
+.tile:hover .polaroid img {
+  transform: scale(1.06);
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2.4rem;
+  }
+  .caption {
+    font-size: 1.05rem;
+  }
+  .polaroid {
+    padding: 0.4rem 0.4rem 0.15rem;
+  }
+}
+

@@ -1,0 +1,227 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.2rem);
+  align-items: center;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* --- intro copy ------------------------------------------------------------ */
+.intro {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--r-lg);
+  padding: clamp(1.6rem, 4vw, 2.6rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.introText {
+  margin: 0 0 1.6rem;
+  font-size: clamp(1rem, 2.4vw, 1.1rem);
+  line-height: 1.85;
+  color: var(--ink);
+}
+
+.traits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.traits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  font-weight: 500;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--r-md);
+  background: var(--cream-deep);
+  transition: transform var(--t-med) var(--ease), background var(--t-med);
+}
+.traits li:hover {
+  transform: translateX(5px);
+  background: var(--blush);
+  color: var(--ink);
+}
+
+.tick {
+  flex: none;
+  color: var(--gold-deep);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+
+/* --- photo beside the intro ------------------------------------------------ */
+.photoWrap {
+  margin: 0;
+  background: var(--white);
+  padding: 0.8rem 0.8rem 0.4rem;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  transform: rotate(2deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.photoWrap:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+.photoWrap img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+.photoWrap figcaption {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  text-align: center;
+  color: var(--rose-ink);
+  padding: 0.35rem 0 0.2rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PENDING PARTY RECEIPT — the inside joke, pinned to the page
+   ═════════════════════════════════════════════════════════════════════════ */
+/* wrapper: the tilt, the shadow and the pin. drop-shadow follows the torn
+   silhouette of the paper instead of a plain rectangle. */
+.receiptWrap {
+  position: relative;
+  max-width: 34rem;
+  margin: clamp(3rem, 8vw, 5rem) auto 0;
+  filter: drop-shadow(0 16px 34px rgba(160, 116, 132, 0.28));
+  transform: rotate(-1.6deg);
+  transition: transform var(--t-med) var(--ease);
+}
+.receiptWrap:hover {
+  transform: rotate(0deg) scale(1.015);
+}
+
+.receipt {
+  position: relative;
+  padding: clamp(1.9rem, 5vw, 2.5rem) clamp(1.3rem, 4vw, 2rem) clamp(1.7rem, 4.5vw, 2.2rem);
+  background: #fffdf6;
+  color: var(--ink);
+  /* torn-paper scallops: two mask layers, each covering one half of the box,
+     unioned by the default mask compositing */
+  --tooth: 11px;
+  -webkit-mask:
+    radial-gradient(var(--tooth) at 50% 0, #0000 98%, #000) 50% 0 / calc(2 * var(--tooth)) 51% repeat-x,
+    radial-gradient(var(--tooth) at 50% 100%, #0000 98%, #000) 50% 100% / calc(2 * var(--tooth)) 51% repeat-x;
+  mask:
+    radial-gradient(var(--tooth) at 50% 0, #0000 98%, #000) 50% 0 / calc(2 * var(--tooth)) 51% repeat-x,
+    radial-gradient(var(--tooth) at 50% 100%, #0000 98%, #000) 50% 100% / calc(2 * var(--tooth)) 51% repeat-x;
+}
+
+.receiptTop,
+.receiptBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.receiptTop {
+  padding-bottom: 0.9rem;
+  border-bottom: 2px dashed rgba(184, 132, 148, 0.45);
+  margin-bottom: 1.1rem;
+}
+
+.receiptBottom {
+  min-height: 2.4rem;
+}
+
+.receiptText {
+  margin: 0 0 1.1rem;
+  font-size: clamp(0.95rem, 2.6vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+}
+
+.receiptRule {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(184, 132, 148, 0.5) 0 7px,
+    transparent 7px 14px
+  );
+  margin-bottom: 0.9rem;
+}
+
+.receiptDue {
+  color: var(--ink-soft);
+}
+.receiptDue strong {
+  color: var(--rose-ink);
+  font-size: 0.72rem;
+}
+
+/* the big rubber stamp */
+.stamp {
+  flex: none;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 3.6vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #d0536d;
+  border: 3px solid #d0536d;
+  border-radius: 8px;
+  padding: 0.2rem 0.65rem;
+  transform: rotate(-9deg);
+  opacity: 0.75;
+  pointer-events: none;
+  animation: stampIn 0.7s var(--ease) 0.35s both;
+}
+
+@keyframes stampIn {
+  0% { opacity: 0; transform: rotate(-9deg) scale(2.2); }
+  70% { opacity: 0.9; transform: rotate(-9deg) scale(0.94); }
+  100% { opacity: 0.75; transform: rotate(-9deg) scale(1); }
+}
+
+.pin {
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%) rotate(8deg);
+  font-size: 1.5rem;
+}
+
+/* ═══════════════════════ RESPONSIVE ═══════════════════════ */
+@media (max-width: 820px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .photoWrap {
+    max-width: 20rem;
+    margin: 0 auto;
+    transform: rotate(-1.5deg);
+  }
+}
+
+@media (max-width: 480px) {
+  /* the two header labels only just fit side by side on a narrow phone */
+  .receiptTop {
+    font-size: 0.53rem;
+    letter-spacing: 0.09em;
+  }
+  .receiptBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  .stamp {
+    align-self: center;
+  }
+}

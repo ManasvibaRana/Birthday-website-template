@@ -1,0 +1,211 @@
+/* ============================================================================
+   GLOBAL STYLES + DESIGN TOKENS
+   Change the colours in :root and the whole site restyles itself.
+   ========================================================================== */
+
+:root {
+  /* --- palette: blush pink, cream, lavender, soft gold --------------------- */
+  --cream: #fffaf6;
+  --cream-deep: #fdf1ea;
+  --blush: #f8d7dd;
+  --blush-deep: #f2b8c6;
+  --rose: #e79aae;
+  --rose-ink: #b06479;
+  --lavender: #e6ddf5;
+  --lavender-deep: #cdbdec;
+  --lilac-ink: #7a68a6;
+  --gold: #e8c99b;
+  --gold-deep: #cfa96f;
+
+  --ink: #4a3b41;          /* main text */
+  --ink-soft: #8a757d;     /* secondary text */
+  --white: #ffffff;
+
+  /* --- typography --------------------------------------------------------- */
+  --font-display: 'Caveat', 'Segoe Script', cursive;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-body: 'Quicksand', 'Nunito', system-ui, -apple-system, sans-serif;
+
+  /* --- shape & depth ------------------------------------------------------ */
+  --r-sm: 14px;
+  --r-md: 22px;
+  --r-lg: 32px;
+  --r-xl: 44px;
+  --shadow-sm: 0 4px 16px rgba(184, 132, 148, 0.12);
+  --shadow-md: 0 10px 34px rgba(184, 132, 148, 0.16);
+  --shadow-lg: 0 22px 60px rgba(160, 116, 132, 0.2);
+
+  /* --- motion ------------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast: 0.25s;
+  --t-med: 0.5s;
+  --t-slow: 0.9s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* soft dreamy background wash behind everything */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 12% -6%, rgba(248, 215, 221, 0.85), transparent 62%),
+    radial-gradient(52rem 38rem at 92% 6%, rgba(230, 221, 245, 0.8), transparent 60%),
+    radial-gradient(46rem 40rem at 50% 108%, rgba(232, 201, 155, 0.34), transparent 62%),
+    var(--cream);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+::selection {
+  background: var(--blush-deep);
+  color: var(--ink);
+}
+
+/* pretty scrollbar (desktop) */
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blush-deep);
+  border-radius: 99px;
+  border: 3px solid var(--cream-deep);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rose);
+}
+
+/* ---------------------------------------------------------------------------
+   Shared layout helpers used across sections
+   ------------------------------------------------------------------------ */
+.section {
+  padding: clamp(4.5rem, 10vw, 8.5rem) clamp(1.1rem, 4vw, 2.5rem);
+  max-width: 1180px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.sectionLabel {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--rose-ink);
+  opacity: 0.75;
+  margin: 0 0 0.6rem;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.7rem, 7vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+  margin: 0 0 0.7rem;
+  color: var(--ink);
+}
+
+.sectionIntro {
+  text-align: center;
+  max-width: 34rem;
+  margin: 0 auto clamp(2.6rem, 6vw, 4rem);
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+
+/* little decorative divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto 1.6rem;
+  color: var(--gold-deep);
+  font-size: 0.95rem;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  height: 1px;
+  width: clamp(2rem, 8vw, 5rem);
+  background: linear-gradient(90deg, transparent, var(--blush-deep), transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal — elements start hidden, .isVisible is added by the observer
+   ------------------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity var(--t-slow) var(--ease),
+    transform var(--t-slow) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  /* deliberately no `will-change` here — it would apply to dozens of elements
+     at once and also make each one a containing block for fixed children */
+}
+.reveal.isVisible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Respect people who get motion sick */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
