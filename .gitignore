@@ -8,7 +8,7 @@ dist-ssr
 .env.*
 !.env.example
 
-# personal photos/videos — not committed
+# personal photos/videos - not committed
 public/images/*
 !public/images/.gitkeep
 *.jpg

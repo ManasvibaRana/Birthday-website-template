@@ -84,9 +84,9 @@ export default function Magazine() {
      page you're leaving, its back is the left half of the page you're going to.
      That's literally how paper works, and it's what makes the turn read right.
 
-       nearPage — the sheet being turned. Its left half stays on the left of the
+       nearPage - the sheet being turned. Its left half stays on the left of the
                   book; its right half rides away on the leaf.
-       farPage  — the sheet being revealed. Its right half is already sitting on
+       farPage - the sheet being revealed. Its right half is already sitting on
                   the right of the book; its left half arrives on the leaf's back.
 
      At rest both are the same page, so the spread shows one complete layout. */
@@ -101,7 +101,7 @@ export default function Magazine() {
         <div className="divider reveal">✦</div>
         <p className="sectionIntro reveal">
           {/* 🎀 CHANGE ME */}
-          {pages.length} pages, all about you — flip through them
+          {pages.length} pages, all about you - flip through them
         </p>
 
         <div className={`${s.book} reveal`}>
@@ -207,7 +207,7 @@ export default function Magazine() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   PAGE ROUTER — picks a layout based on `type` in data.js
+   PAGE ROUTER - picks a layout based on `type` in data.js
    ════════════════════════════════════════════════════════════════════════ */
 function Page({ page }) {
   switch (page.type) {
@@ -232,7 +232,7 @@ function Page({ page }) {
 function CoverPage({ page }) {
   return (
     <article className={s.cover}>
-      {/* 📸 the cover photo — set `photo` (and optionally `photoFocus`) in data.js */}
+      {/* 📸 the cover photo - set `photo` (and optionally `photoFocus`) in data.js */}
       {page.photo && (
         <img
           className={s.coverImg}
@@ -277,10 +277,10 @@ function ContentsPage({ page }) {
 
         <ol className={s.contentsList}>
           {page.items.map((raw, i) => {
-            // items look like "01 — Cover Star: Someone"
-            const at = raw.indexOf('—')
+            // items look like "01 - Cover Star: Someone"
+            const at = raw.indexOf(' - ')
             const num = at === -1 ? String(i + 1).padStart(2, '0') : raw.slice(0, at).trim()
-            const label = at === -1 ? raw : raw.slice(at + 1).trim()
+            const label = at === -1 ? raw : raw.slice(at + 3).trim()
             return (
               <li key={i}>
                 <span className={s.contentsNum}>{num}</span>
@@ -355,7 +355,7 @@ function PortraitsPage({ page }) {
         {page.blurb && <p className={s.portraitsBlurb}>{page.blurb}</p>}
       </div>
 
-      {/* 📸 PHOTOS — the `shots` array on this page in data.js */}
+      {/* 📸 PHOTOS - the `shots` array on this page in data.js */}
       <div className={s.shots}>
         {page.shots.map((shot, i) => (
           <figure key={i} className={s.shot} style={{ '--i': i }}>

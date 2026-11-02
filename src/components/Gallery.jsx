@@ -16,7 +16,7 @@ export default function Gallery() {
       <div className="divider reveal">✦</div>
       <p className="sectionIntro reveal">
         {/* 🎀 CHANGE ME */}
-        click any photo to make it big — yes, even that one
+        click any photo to make it big - yes, even that one
       </p>
 
       {/* every photo is a polaroid pegged to a washing line */}

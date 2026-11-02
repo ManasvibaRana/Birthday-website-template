@@ -37,7 +37,7 @@ export default function About() {
         )}
       </div>
 
-      {/* ═══ THE RUNNING JOKE — stamped like an unpaid receipt ═══
+      {/* ═══ THE RUNNING JOKE - stamped like an unpaid receipt ═══
            The wrapper carries the tilt + drop-shadow; the inner element carries
            the torn-paper mask (a mask would clip a normal box-shadow away). */}
       <div className={`${s.receiptWrap} reveal`}>

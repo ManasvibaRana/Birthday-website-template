@@ -5,8 +5,8 @@ import s from './Lightbox.module.css'
 
 /**
  * Full-screen photo viewer. Controlled by the parent:
- *   items  – the array of {src, caption}
- *   index  – which one is open (null = closed)
+ *   items  - the array of {src, caption}
+ *   index  - which one is open (null = closed)
  *   onClose / onPrev / onNext
  */
 export default function Lightbox({ items, index, onClose, onPrev, onNext }) {

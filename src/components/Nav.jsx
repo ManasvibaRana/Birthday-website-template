@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import s from './Nav.module.css'
 
-// 🎀 CHANGE ME — nav labels (the `id` must match the section ids in App.jsx)
+// 🎀 CHANGE ME - nav labels (the `id` must match the section ids in App.jsx)
 const links = [
   { id: 'hero', label: 'hello 💛' },
   { id: 'about', label: 'about her' },

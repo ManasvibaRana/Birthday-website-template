@@ -2,7 +2,7 @@ import { us, img } from '../data'
 import s from './Us.module.css'
 
 /**
- * The closing section — just about the two of you.
+ * The closing section - just about the two of you.
  * All the copy lives in the `us` block in data.js.
  */
 export default function Us() {

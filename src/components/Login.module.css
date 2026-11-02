@@ -141,7 +141,7 @@
   font-size: clamp(1.6rem, 6vw, 2.1rem);
   font-weight: 700;
   line-height: 1;
-  /* the letter itself is hidden — the star below stands in for it */
+  /* the letter itself is hidden - the star below stands in for it */
   color: transparent;
   caret-color: var(--rose);
   text-transform: uppercase;

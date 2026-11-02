@@ -29,7 +29,7 @@
   position: relative;
   width: 50%;
   padding-bottom: clamp(2rem, 5vw, 3.2rem);
-  /* the gap between the rail and the card — the connector spans it */
+  /* the gap between the rail and the card - the connector spans it */
   --gap: clamp(1.6rem, 4vw, 3rem);
 }
 

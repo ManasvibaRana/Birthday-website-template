@@ -2,22 +2,22 @@ import { useState, useRef, useEffect } from 'react'
 import s from './Login.module.css'
 
 /* ════════════════════════════════════════════════════════════════════════════
-   🔑 THE PASSWORD — change this one line to change the magic word.
+   🔑 THE PASSWORD - change this one line to change the magic word.
 
    It can be numbers or a word. Words are CASE-INSENSITIVE and spaces at
    either end are ignored, so "rose", "ROSE" and " Rose " would all work.
 
    The row of boxes on the page automatically matches the length of
-   whatever you type here — 6 characters, 6 boxes.
+   whatever you type here - 6 characters, 6 boxes.
 
    (This is client-side only and purely decorative, not real security.)
    ══════════════════════════════════════════════════════════════════════════ */
 const MAGIC_WORD = '123456'
 
-// 🎀 CHANGE ME — the hint shown on the page from the very start
+// 🎀 CHANGE ME - the hint shown on the page from the very start
 const HINT = 'hint: the most famous password in the world 💛'
 
-/* 🎀 CHANGE ME — the cute angry pop-up for a wrong answer.
+/* 🎀 CHANGE ME - the cute angry pop-up for a wrong answer.
    They're used in order and then loop, so each wrong try gets grumpier. */
 const ANGRY = [
   {
@@ -97,7 +97,7 @@ export default function Login({ onUnlock }) {
       if (chars[i]) {
         setChar(i, '') // clear this one
       } else if (i > 0) {
-        setChar(i - 1, '') // already empty — step back and clear that one
+        setChar(i - 1, '') // already empty - step back and clear that one
         focusBox(i - 1)
       }
     } else if (e.key === 'ArrowLeft') {
@@ -134,7 +134,7 @@ export default function Login({ onUnlock }) {
       return
     }
 
-    // wrong — get grumpy at her
+    // wrong - get grumpy at her
     setAngry(attempts % ANGRY.length)
     setAttempts((a) => a + 1)
     setShake(true)
@@ -159,14 +159,14 @@ export default function Login({ onUnlock }) {
       <div className={`${s.card} ${shake ? s.shake : ''}`}>
         <div className={s.ribbon} aria-hidden="true">🎀</div>
 
-        {/* 🎀 CHANGE ME — the login copy */}
+        {/* 🎀 CHANGE ME - the login copy */}
         <p className={s.kicker}>a little something for you</p>
         <h1 className={s.title}>enter the magic word ✨</h1>
         <p className={s.sub}>this page is locked, and only you have the key</p>
 
         <form className={s.form} onSubmit={handleSubmit}>
-          {/* One box per letter. The word is exactly this long — no more, no
-              less — so a longer spelling can't be typed in by accident. */}
+          {/* One box per letter. The word is exactly this long - no more, no
+              less - so a longer spelling can't be typed in by accident. */}
           <div className={s.boxes} onPaste={onPaste}>
             {chars.map((ch, i) => (
               <span key={i} className={s.boxWrap}>

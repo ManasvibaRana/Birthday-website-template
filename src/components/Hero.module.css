@@ -163,7 +163,7 @@
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 800;
-  /* spacing is handled by textLength on the <textPath> — see Hero.jsx */
+  /* spacing is handled by textLength on the <textPath> - see Hero.jsx */
   fill: var(--rose-ink);
   opacity: 0.85;
 }

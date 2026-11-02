@@ -175,7 +175,7 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
-   Scroll reveal — elements start hidden, .isVisible is added by the observer
+   Scroll reveal - elements start hidden, .isVisible is added by the observer
    ------------------------------------------------------------------------ */
 .reveal {
   opacity: 0;
@@ -184,7 +184,7 @@ button {
     opacity var(--t-slow) var(--ease),
     transform var(--t-slow) var(--ease);
   transition-delay: var(--reveal-delay, 0ms);
-  /* deliberately no `will-change` here — it would apply to dozens of elements
+  /* deliberately no `will-change` here - it would apply to dozens of elements
      at once and also make each one a containing block for fixed children */
 }
 .reveal.isVisible {

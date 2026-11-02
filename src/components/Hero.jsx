@@ -2,7 +2,7 @@ import { her, img } from '../data'
 import s from './Hero.module.css'
 
 /* Where each floating polaroid sits: [top%, left%, rotation(deg), width(rem)].
-   Below 900px only the 1st and 4th survive — top-left and bottom-right — so the
+   Below 900px only the 1st and 4th survive - top-left and bottom-right - so the
    two that remain still balance each other diagonally. */
 const PHOTO_SPOTS = [
   ['14%', '6%', -8, 9],
@@ -11,7 +11,7 @@ const PHOTO_SPOTS = [
   ['62%', '80%', -6, 9.5],
 ]
 
-/* 🎀 CHANGE ME — the petals & sparkles that drift down the hero.
+/* 🎀 CHANGE ME - the petals & sparkles that drift down the hero.
    [emoji, left%, size(rem), duration(s), delay(s)] */
 const PETALS = [
   ['🌸', 6, 1.5, 17, 0],
@@ -137,7 +137,7 @@ export default function Hero() {
             </defs>
             <text className={s.badgeText}>
               {/* textLength = the circle's circumference (2π × 74), so whatever
-                  text you write is spaced to fill the ring exactly once —
+                  text you write is spaced to fill the ring exactly once - 
                   no overlap, no gap. */}
               <textPath
                 href="#heroBadgeCircle"
@@ -150,7 +150,7 @@ export default function Hero() {
             </text>
           </svg>
 
-          {/* 📸 her photo in the centre — set `heroPhoto` in data.js */}
+          {/* 📸 her photo in the centre - set `heroPhoto` in data.js */}
           <span className={s.badgeGlow} aria-hidden="true" />
           {her.heroPhoto && (
             <img

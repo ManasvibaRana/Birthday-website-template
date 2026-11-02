@@ -48,7 +48,7 @@ export default function App() {
       </main>
 
       <footer className={s.footer}>
-        {/* 🎀 CHANGE ME — footer line */}
+        {/* 🎀 CHANGE ME - footer line */}
         <p>made with far too much love, for {her.nickname} 💛</p>
         <p className={s.small}>
           © {new Date().getFullYear()} · the {her.name} appreciation society

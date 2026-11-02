@@ -27,7 +27,7 @@ export default function Timeline() {
               <h3 className={s.title}>{item.title}</h3>
               <p className={s.text}>{item.text}</p>
 
-              {/* 📸 optional photo — `photo` + optional `photoFocus` in data.js */}
+              {/* 📸 optional photo - `photo` + optional `photoFocus` in data.js */}
               {item.photo && (
                 <img
                   className={s.photo}
@@ -38,7 +38,7 @@ export default function Timeline() {
                 />
               )}
 
-              {/* 🎬 optional video — set `video` on this entry in data.js */}
+              {/* 🎬 optional video - set `video` on this entry in data.js */}
               {item.video && (
                 <figure className={s.videoWrap}>
                   <video

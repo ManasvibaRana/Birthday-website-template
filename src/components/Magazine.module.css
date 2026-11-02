@@ -11,13 +11,13 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE BOOK — an open spread with the spine down the middle.
+   THE BOOK - an open spread with the spine down the middle.
 
    Every entry in data.js is one full spread, and its layout runs right across
    both halves. Each half is a window onto one side of that layout: the sheet
    inside is the full spread width, and the right-hand window slides it left to
    reveal its other half. Nothing reflows when a page turns, because it's always
-   the same layout — you're just seeing a different part of it.
+   the same layout - you're just seeing a different part of it.
    ═════════════════════════════════════════════════════════════════════════ */
 .book {
   position: relative;
@@ -35,13 +35,13 @@
      scroll to it, rather than losing the bottom of an article.
      If you add a lot of copy to a page and it gets cut off, raise the floor. */
   height: clamp(45rem, 82svh, 48rem);
-  /* the viewer's eye position — a long focal length keeps the turn calm
+  /* the viewer's eye position - a long focal length keeps the turn calm
      rather than fish-eyed */
   perspective: 2400px;
   perspective-origin: 50% 50%;
 
   --turn: 900ms;
-  /* slow to lift, quick through the middle, settles softly — how paper moves */
+  /* slow to lift, quick through the middle, settles softly - how paper moves */
   --turn-ease: cubic-bezier(0.38, 0.02, 0.24, 1);
 }
 
@@ -114,7 +114,7 @@
    THE PAGE TURN
    One physical leaf, hinged on the spine in the middle of the book. Its front
    is the right half of the page you're leaving; its back is the left half of
-   the page you're arriving at — exactly like the two sides of a real sheet.
+   the page you're arriving at - exactly like the two sides of a real sheet.
    ------------------------------------------------------------------------ */
 .leaf {
   position: absolute;
@@ -162,7 +162,7 @@
   border-radius: 0 var(--r-lg) var(--r-lg) 0;
 }
 
-/* Its reverse. Flipped 180°, so it lands as the left-hand page — which means
+/* Its reverse. Flipped 180°, so it lands as the left-hand page - which means
    its rounded corners and its content both come out mirrored into place. */
 .leafBack {
   transform: rotateY(180deg);
@@ -255,7 +255,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   PHONES — a spread is unreadable at 390px wide, so the book collapses to a
+   PHONES - a spread is unreadable at 390px wide, so the book collapses to a
    single page and the leaf hinges on the outer edge instead of the middle.
    Same component, same animation; only the geometry changes.
    ------------------------------------------------------------------------ */
@@ -281,7 +281,7 @@
   .leafBack {
     border-radius: var(--r-lg);
   }
-  /* no facing page to show on the reverse — just paper */
+  /* no facing page to show on the reverse - just paper */
   .leafBackInner {
     display: none;
   }
@@ -1034,7 +1034,7 @@
 
 @media (max-width: 560px) {
   /* taller on a phone, and tighter content, so less of a page needs scrolling.
-     Every page is still exactly the same size — the densest ones (the fact
+     Every page is still exactly the same size - the densest ones (the fact
      file, the features) just scroll a little inside their own page. */
   .stage {
     height: clamp(36rem, 82svh, 48rem);
